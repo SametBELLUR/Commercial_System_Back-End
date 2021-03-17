@@ -30,7 +30,7 @@ namespace Core.Aspects.Autofac.Performance
         {
             if (_stopwatch.Elapsed.TotalSeconds > _interval)
             {
-                //logging, mail vb
+                //logging, mail vb.
                 Debug.WriteLine($"Performance : {invocation.Method.DeclaringType.FullName}.{invocation.Method.Name}-->{_stopwatch.Elapsed.TotalSeconds}");
             }
             _stopwatch.Reset();
