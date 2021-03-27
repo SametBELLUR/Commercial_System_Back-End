@@ -32,14 +32,12 @@ namespace Business.Concrete
             _categoryService = categoryService;
         }
 
-        //[SecuredOperation("product.add,admin")]
+        [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
         {
-            IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product.CategoryId),
-                CheckIfProductNameExist(product.ProductName),
-                CheckIfCategoryLimitExceeded());
+            IResult result = BusinessRules.Run(CheckIfCategoryLimitExceeded());
             if (result != null)
             {
                 return result;
@@ -90,19 +88,9 @@ namespace Business.Concrete
         private IResult CheckIfProductCountOfCategoryCorrect(int categoryId)
         {
             var result = _productDal.GetAll(p => p.CategoryId == categoryId).Count;
-            if (result >= 10)
+            if (result >= 15)
             {
                 return new ErrorResult(Messages.ProductCountOfCategoryError);
-            }
-            return new SuccessResult();
-        }
-
-        private IResult CheckIfProductNameExist(string productName)
-        {
-            var result = _productDal.GetAll(p => p.ProductName == productName).Any();
-            if (result)
-            {
-                return new ErrorResult(Messages.ProductNameAlreadyExist);
             }
             return new SuccessResult();
         }
@@ -110,7 +98,7 @@ namespace Business.Concrete
         private IResult CheckIfCategoryLimitExceeded()
         {
             var result = _categoryService.GetAll();
-            if (result.Data.Count > 10)
+            if (result.Data.Count > 15)
             {
                 return new ErrorResult(Messages.CategoryLimitExceeded);
             }
