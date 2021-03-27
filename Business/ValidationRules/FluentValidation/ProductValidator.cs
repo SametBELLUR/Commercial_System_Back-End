@@ -1,4 +1,5 @@
-﻿using Business.Constants;
+﻿using Business.Abstract;
+using Business.Constants;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
@@ -13,6 +14,7 @@ namespace Business.ValidationRules.FluentValidation
     public class ProductValidator : AbstractValidator<Product>
     {
         IProductDal _productDal = new EfProductDal();
+        ICategoryService _categoryService;
         public ProductValidator()
         {
             RuleFor(p => p.ProductName).MinimumLength(3).WithMessage(Messages.ProductNameSyllableError);
@@ -47,6 +49,20 @@ namespace Business.ValidationRules.FluentValidation
             {
                 return true;
             }
+        }
+
+        private bool CheckIfCategoryLimitExceeded()
+        {
+            var result = _categoryService.GetAll();
+            if (result.Data.Count > 15)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
         }
     }
 }

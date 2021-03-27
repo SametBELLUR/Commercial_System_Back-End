@@ -60,6 +60,7 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryId == id), Messages.ProductsListed);
         }
+        
 
         [CacheAspect]
         [PerformanceAspect(5)]
@@ -82,17 +83,6 @@ namespace Business.Concrete
         public IResult Update(Product product)
         {
             throw new NotImplementedException();
-        }
-
-
-        private IResult CheckIfProductCountOfCategoryCorrect(int categoryId)
-        {
-            var result = _productDal.GetAll(p => p.CategoryId == categoryId).Count;
-            if (result >= 15)
-            {
-                return new ErrorResult(Messages.ProductCountOfCategoryError);
-            }
-            return new SuccessResult();
         }
 
         private IResult CheckIfCategoryLimitExceeded()
